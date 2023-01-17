@@ -7,7 +7,7 @@ canvas.height = 900;
 //globals
 const cellSize = 50;
 let frame = 0;
-let enemiesInterval = 600;
+let enemiesInterval = 60000;
 
 const gameGrid = [];
 const defenders = [];
@@ -120,14 +120,17 @@ class Enemy{
         this.y = verticalPosition;
         this.width = cellSize;
         this.height = cellSize;
-        this.speed = 1;
-        this.movement = this.speed;
+        this.speed = 0.05;
+        this.movementX = this.speed;
+        this.movementY = 0;
         this.health = 5;
         this.maxHealth = this.health;
+        this.fastestPath = [];
         
     }
     update(){
-        this.x -= this.movement;
+        this.x -= this.movementX;
+        this.y -= this.movementY;
     }
 
     draw(){
@@ -143,18 +146,12 @@ function handleEnemies(){
             
         }
 
-            //Algo fastest path
-            //Fonction de déplacement
-            for(let j=0;j<defenders.length;j++){
-                //while
-                
-                if(enemies[i].y > defenders[j].y - cellSize){                    
-                    enemies[i].y -= 1;
-                    enemies[i].movement = 0;
-                } else {
-                    enemies[i].movement = 1;
-                }
-            }
+            //fastest path research
+        for(let j=0;j<gameGrid.length;j++){
+            
+        }
+        
+        
         
         
         enemies[i].update();
@@ -167,11 +164,10 @@ function handleEnemies(){
         enemies.push(new Enemy(verticalPosition));
         //enemyPositions.push(verticalPosition);
         //if(enemiesInterval > 120) enemiesInterval -= 50;
-        console.log(enemies);
+        //console.log(enemies);
     }
 
 }
-
 
 
 
@@ -199,8 +195,22 @@ canvas.addEventListener('click',function(e){
     
     // }
 
+    //méthode valable pour le terrain par défaut
     for(let i = 0; i < gameGrid.length;i++){
-        //if()
+        if(gameGrid[i].x === gridPositionX && gameGrid[i].y === gridPositionY && 
+            (gameGrid[i].isTaken === true || 
+            gameGrid[i+1].isTaken === true ||
+            gameGrid[i+18].isTaken === true || 
+            gameGrid[i+19].isTaken === true)
+            ){
+                
+                for(let j = 0; j<defenders.length;j++){
+                    if(defenders[j].x === gridPositionX && defenders[j].y === gridPositionY){
+                        defenders[j].isSelected = !(defenders[j].isSelected);
+                    }
+                }
+                return;
+            }
     }
 
     for(let j = 0; j < defenders.length;j++){
@@ -215,7 +225,7 @@ canvas.addEventListener('click',function(e){
         }
     }
     defenders.push(new Defender(gridPositionX,gridPositionY));
-    console.log(defenders);
+    //console.log(defenders);
 })
 
 
